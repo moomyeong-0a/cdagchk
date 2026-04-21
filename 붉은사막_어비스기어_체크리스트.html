@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>붉은사막 어비스 기어 제작법 체크리스트</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f13;
+    --bg2: #17171e;
+    --bg3: #1e1e28;
+    --border: #2e2e3e;
+    --accent: #c8a96e;
+    --accent2: #e8c98a;
+    --text: #e8e4d8;
+    --text2: #9a9080;
+    --text3: #5a5448;
+    --green: #4caf7d;
+    --green-bg: #1a2e22;
+    --red: #e05c5c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 32px 16px 64px;
+  }
+  .page-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .page-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent2);
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  .page-header p {
+    font-size: 13px;
+    color: var(--text2);
+  }
+  .total-bar-wrap {
+    max-width: 720px;
+    margin: 16px auto 0;
+    background: var(--bg3);
+    border-radius: 4px;
+    height: 8px;
+    border: 1px solid var(--border);
+  }
+  .total-bar {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #c8a96e, #e8c98a);
+    transition: width 0.3s ease;
+  }
+  .total-stat {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 6px;
+    text-align: center;
+  }
+  .total-stat span { color: var(--accent); font-weight: 500; }
+
+  .controls {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 20px auto 28px;
+    max-width: 720px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); background: #1a1810; }
+  .btn-reset { border-color: #3e2222; color: var(--red); }
+  .btn-reset:hover { background: #2a1515; border-color: var(--red); }
+
+  .ruins { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+
+  .ruin-section {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .ruin-section.complete { border-color: #2e4a38; }
+
+  .ruin-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--bg2);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .ruin-header:hover { background: var(--bg3); }
+
+  .ruin-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .ruin-title {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+  }
+  .ruin-badge {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text2);
+    font-weight: 500;
+    min-width: 52px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .ruin-badge.done { background: var(--green-bg); border-color: #2e5a3a; color: var(--green); }
+  .chevron {
+    font-size: 10px;
+    color: var(--text3);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .ruin-section.open .chevron { transform: rotate(180deg); }
+
+  .ruin-body { display: none; border-top: 1px solid var(--border); }
+  .ruin-section.open .ruin-body { display: block; }
+
+  .items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--bg);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.12s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .item:hover { background: var(--bg3); }
+  .item:active { background: #1a1e14; }
+
+  .cb {
+    width: 17px;
+    height: 17px;
+    border-radius: 3px;
+    border: 1.5px solid var(--text3);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    pointer-events: none;
+  }
+  .item.checked .cb {
+    background: var(--green);
+    border-color: var(--green);
+  }
+  .cb-tick {
+    display: none;
+    width: 9px;
+    height: 6px;
+    border-left: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(-45deg) translateY(-1px);
+  }
+  .item.checked .cb-tick { display: block; }
+
+  .item-label {
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.4;
+    pointer-events: none;
+    transition: color 0.15s;
+  }
+  .item.checked .item-label {
+    color: var(--text3);
+    text-decoration: line-through;
+  }
+
+  .ruin-progress {
+    height: 3px;
+    background: var(--bg3);
+  }
+  .ruin-progress-bar {
+    height: 100%;
+    background: var(--green);
+    transition: width 0.3s ease;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>⚔ 어비스 기어 제작법 체크리스트</h1>
+  <p>붉은사막 — 유적 탐색 드롭 수집 현황</p>
+  <div class="total-bar-wrap"><div class="total-bar" id="total-bar" style="width:0%"></div></div>
+  <div class="total-stat"><span id="done-count">0</span> / <span id="total-count">0</span> 수집 완료</div>
+</div>
+
+<div class="controls">
+  <button class="btn" onclick="expandAll()">전체 펼치기</button>
+  <button class="btn" onclick="collapseAll()">전체 접기</button>
+  <button class="btn" onclick="checkAll()">전체 체크</button>
+  <button class="btn btn-reset" onclick="resetAll()">전체 초기화</button>
+</div>
+
+<div class="ruins" id="ruins"></div>
+
+<script>
+const DATA = [
+  {
+    id: "wang", icon: "⛏", name: "왕의 산 발굴지",
+    items: ["하늘의 심판","천둥의 송곳니","어둠의 반월","잿빛 대지 강타","심판의 불꽃","칼바람 날갯짓","과냉각 폭발","태고의 폭풍","칠흑의 잔영","그림자 발톱","여왕의 독니","태고의 분노","태고의 웅징"]
+  },
+  {
+    id: "botu", icon: "🌿", name: "보투디그 유적",
+    items: ["대지의 축복","자연의 축복","야수의 축복","헌신","훈련","숲의 축복","유대","교감","단짝","기운 흡수","생명의 순환","용기의 순환","기력의 순환","연격"]
+  },
+  {
+    id: "snake", icon: "🐍", name: "뱀 신전",
+    items: ["부패의 송곳니","부정의 구슬","심연의 광휘","교활한 선물","혼란의 포효","소금물 역류","번개신의 형벌","기공 지르기","첩산고","강철의 심판","죽음의 심판","도덕의 심판","고대의 심판"]
+  },
+  {
+    id: "sewer", icon: "⏳", name: "세월의 유적",
+    items: ["힘의 심판","야수의 심판","미지의 심판","심연동화","뱀의 심장","돌의 심장","나선의 응축","행운","강탈","마르지 않는 화살","미식가","절감","그림자 손길"]
+  },
+  {
+    id: "rich", icon: "🌲", name: "리치우드 유적",
+    items: ["물가르기","화염 장막","서리 장막","번개 장막","대지의 울림","배신의 낙인","까마귀 추격","흔들리는 갈대","바람 가르기","혹한의 세례","작열의 화산탄","천둥의 보주","업보의 파동"]
+  },
+  {
+    id: "ber", icon: "🏚", name: "베르하임 폐허",
+    items: ["어둠의 상처","사냥개의 발톱","영혼의 심판","해방된 거인의 힘","어둠의 수호","까마귀 폭풍","분쇄의 폭풍","그믐달 베기","반달 베기","보름달 베기","얼음 망령의 강타","최악의 붉은 장미","속죄의 강철 비"]
+  }
+];
+
+const state = {};
+DATA.forEach(r => r.items.forEach(item => {
+  const k = r.id + ":" + item;
+  try { state[k] = localStorage.getItem(k) === "1"; } catch(e) { state[k] = false; }
+}));
+
+function save(k, v) { try { localStorage.setItem(k, v ? "1" : "0"); } catch(e) {} }
+
+function updateStats() {
+  const total = Object.keys(state).length;
+  const done = Object.values(state).filter(Boolean).length;
+  document.getElementById("done-count").textContent = done;
+  document.getElementById("total-count").textContent = total;
+  document.getElementById("total-bar").style.width = (total ? Math.round(done / total * 100) : 0) + "%";
+
+  DATA.forEach(r => {
+    const rdone = r.items.filter(i => state[r.id + ":" + i]).length;
+    const badge = document.getElementById("badge-" + r.id);
+    const bar = document.getElementById("rbar-" + r.id);
+    const sec = document.getElementById("sec-" + r.id);
+    if (badge) {
+      badge.textContent = rdone + " / " + r.items.length;
+      badge.className = "ruin-badge" + (rdone === r.items.length ? " done" : "");
+    }
+    if (bar) bar.style.width = Math.round(rdone / r.items.length * 100) + "%";
+    if (sec) sec.classList.toggle("complete", rdone === r.items.length);
+  });
+}
+
+function toggleItem(k) {
+  state[k] = !state[k];
+  save(k, state[k]);
+  const el = document.getElementById("el-" + k);
+  if (el) el.classList.toggle("checked", state[k]);
+  updateStats();
+}
+
+function toggleSection(id) {
+  const sec = document.getElementById("sec-" + id);
+  sec.classList.toggle("open");
+}
+
+function expandAll() { DATA.forEach(r => document.getElementById("sec-" + r.id).classList.add("open")); }
+function collapseAll() { DATA.forEach(r => document.getElementById("sec-" + r.id).classList.remove("open")); }
+function checkAll() {
+  Object.keys(state).forEach(k => { state[k] = true; save(k, true); });
+  DATA.forEach(r => r.items.forEach(item => {
+    const el = document.getElementById("el-" + r.id + ":" + item);
+    if (el) el.classList.add("checked");
+  }));
+  updateStats();
+}
+function resetAll() {
+  if (!confirm("모든 체크를 초기화할까요?")) return;
+  Object.keys(state).forEach(k => { state[k] = false; save(k, false); });
+  DATA.forEach(r => r.items.forEach(item => {
+    const el = document.getElementById("el-" + r.id + ":" + item);
+    if (el) el.classList.remove("checked");
+  }));
+  updateStats();
+}
+
+function render() {
+  const container = document.getElementById("ruins");
+  DATA.forEach(r => {
+    const sec = document.createElement("div");
+    sec.className = "ruin-section open";
+    sec.id = "sec-" + r.id;
+
+    const header = document.createElement("div");
+    header.className = "ruin-header";
+    header.innerHTML = `
+      <div class="ruin-icon">${r.icon}</div>
+      <div class="ruin-title">${r.name}</div>
+      <div class="ruin-badge" id="badge-${r.id}">0 / ${r.items.length}</div>
+      <div class="chevron">▼</div>
+    `;
+    header.addEventListener("click", () => toggleSection(r.id));
+
+    const body = document.createElement("div");
+    body.className = "ruin-body";
+
+    const progressWrap = document.createElement("div");
+    progressWrap.className = "ruin-progress";
+    progressWrap.innerHTML = `<div class="ruin-progress-bar" id="rbar-${r.id}" style="width:0%"></div>`;
+
+    const grid = document.createElement("div");
+    grid.className = "items-grid";
+
+    r.items.forEach(item => {
+      const k = r.id + ":" + item;
+      const div = document.createElement("div");
+      div.className = "item" + (state[k] ? " checked" : "");
+      div.id = "el-" + k;
+      div.innerHTML = `<div class="cb"><div class="cb-tick"></div></div><span class="item-label">${item}</span>`;
+      div.addEventListener("click", () => toggleItem(k));
+      grid.appendChild(div);
+    });
+
+    body.appendChild(progressWrap);
+    body.appendChild(grid);
+    sec.appendChild(header);
+    sec.appendChild(body);
+    container.appendChild(sec);
+  });
+  updateStats();
+}
+
+render();
+</script>
+</body>
+</html>
